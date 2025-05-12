@@ -1,0 +1,39 @@
+<h1>All Products</h1>
+<a href="/admin/add-product" class="button">Add New Product</a>
+<table>
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Title</th>
+      <th>Price</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% products.forEach(product => { %>
+      <tr>
+        <td><img src="<%= product.imageUrl %>" width="60"></td>
+        <td><%= product.title %></td>
+        <td>Tk<%= product.price %></td>
+        <td>
+          <a href="/product/<%= product._id %>">View</a> |
+          <a href="/admin/edit-product/<%= product._id %>">Edit</a> |
+          <form action="/admin/delete-product/<%= product._id %>" method="POST" style="display:inline;">
+            <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>
+
+<!-- Pagination Links -->
+<div class="pagination">
+  <% if (currentPage > 1) { %>
+    <a href="/admin/products?page=<%= currentPage - 1 %>">Previous</a>
+  <% } %>
+  <span>Page <%= currentPage %> of <%= totalPages %></span>
+  <% if (currentPage < totalPages) { %>
+    <a href="/admin/products?page=<%= currentPage + 1 %>">Next</a>
+  <% } %>
+</div>

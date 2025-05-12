@@ -1,0 +1,54 @@
+<div class="main-content">
+  <h1>All Orders</h1>
+  <% orders.forEach(order => { %>
+    <div class="order">
+      <h3>Customer: <%= order.customer.name %> | Phone: <%= order.customer.phone %></h3>
+      <p>Address: <%= order.customer.address %></p>
+      <p>Status: <strong><%= order.status %></strong></p>
+      <p>Order Date: <%= new Date(order.createdAt).toLocaleString() %></p>
+
+      <!-- Status update form -->
+      <form action="/admin/orders/<%= order._id %>/status" method="POST" style="margin-bottom:10px;">
+        <select name="status">
+          <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+          <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+          <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+        </select>
+        <button type="submit">Update Status</button>
+      </form>
+
+      <ul>
+        <% let orderTotal = 0; %>
+        <% order.products.forEach(p => { %>
+          <% 
+            const title = p.productId ? p.productId.title : 'Unknown Product';
+            const price = p.price || (p.productId ? p.productId.price : 0);
+            const qty = p.quantity || 1;
+            const subtotal = price * qty;
+            orderTotal += subtotal;
+          %>
+          <li>
+            <strong><%= title %></strong> — 
+            Qty: <%= qty %> × 
+            ৳<%= price.toFixed(2) %> = 
+            <strong>৳<%= subtotal.toFixed(2) %></strong>
+          </li>
+        <% }) %>
+      </ul>
+
+      <p><strong>Total: ৳<%= orderTotal.toFixed(2) %></strong></p>
+      <hr>
+    </div>
+  <% }); %>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <% if (currentPage > 1) { %>
+      <a href="/admin/orders?page=<%= currentPage - 1 %>">Previous</a>
+    <% } %>
+    <span>Page <%= currentPage %> of <%= totalPages %></span>
+    <% if (currentPage < totalPages) { %>
+      <a href="/admin/orders?page=<%= currentPage + 1 %>">Next</a>
+    <% } %>
+  </div>
+</div>

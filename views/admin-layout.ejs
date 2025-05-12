@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - <%= title %></title>
+  <link rel="stylesheet" href="/css/admin-style.css">
+</head>
+<body>
+  <!-- Include the admin sidebar partial -->
+  <%- include('partials/admin-sidebar') %>
+
+  <!-- Main content -->
+  <div class="admin-main-content">
+    <main>
+      <%- body %> <!-- Admin-specific main content will go here -->
+    </main>
+  </div>
+
+  <!-- No footer for the admin panel -->
+</body>
+</html>

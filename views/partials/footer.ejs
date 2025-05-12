@@ -1,0 +1,35 @@
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-section">
+      <h4>Contact Us</h4>
+      <p>Phone: +880-123456789</p>
+      <p>Email: support@example.com</p>
+      <p>Address: Dhaka, Bangladesh</p>
+    </div>
+
+    <div class="footer-section">
+      <h4>Follow Us</h4>
+      <div class="social-icons">
+        <a href="#"><img src="/images/facebook.png" alt="Facebook"></a>
+        <a href="#"><img src="/images/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="/images/instagram.png" alt="Instagram"></a>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h4>Admin</h4>
+      <% if (isAuthenticated) { %>
+        <a href="/admin" class="admin-footer-btn">Dashboard</a>
+        <form action="/auth/logout" method="POST" style="display:inline;">
+          <button type="submit" class="logout-button">Logout</button>
+        </form>
+      <% } else { %>
+        <a href="/auth/login" class="admin-footer-btn">Admin Login</a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <%= new Date().getFullYear() %> MyShop. All rights reserved.</p>
+  </div>
+</footer>

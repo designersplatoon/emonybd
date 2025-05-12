@@ -1,0 +1,65 @@
+<div class="product-detail">
+  <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+  <h1><%= product.title %></h1>
+  <p><%= product.description %></p>
+  <p>Price: Tk<%= product.price %></p>
+
+  <div class="quantity-control">
+    <label>Quantity:</label>
+    <div class="qty-wrapper">
+      <button type="button" onclick="changeQty(-1)">−</button>
+      <input type="number" id="quantity" value="1" min="1" readonly>
+      <button type="button" onclick="changeQty(1)">+</button>
+    </div>
+  </div>
+
+  <button onclick="addToCart('<%= product._id %>', '<%= product.title %>', <%= product.price %>)">
+    Add to Cart
+  </button>
+</div>
+
+<div id="toast-container"></div>
+
+
+<script>
+  function changeQty(amount) {
+    const qtyInput = document.getElementById('quantity');
+    let current = parseInt(qtyInput.value);
+    if (isNaN(current)) current = 1;
+    current = Math.max(1, current + amount);
+    qtyInput.value = current;
+  }
+
+  function addToCart(_id, title, price) {
+    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const existing = cart.find(item => item.id === id);
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      cart.push({ _id, title, price, quantity });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    showToast(`${quantity} x "${title}" added to cart!`);
+  }
+
+  function showToast(message) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 100);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => container.removeChild(toast), 300);
+    }, 3000);
+  }
+</script>

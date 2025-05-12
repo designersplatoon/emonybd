@@ -1,0 +1,17 @@
+<div class="admin-main-content">
+    <h1>Dashboard</h1>
+  
+    <details class="dashboard-dropdown">
+      <summary>Top Ordered Products</summary>
+      <ul class="product-list">
+        <% mostOrderedProducts.forEach(item => { %>
+          <li class="product-item">
+            <img src="<%= item.product.imageUrl %>" width="60">
+            <strong><%= item.product.title %></strong>
+            - Ordered: <%= item.count %> times
+          </li>
+        <% }) %>
+      </ul>
+    </details>
+  </div>
+  

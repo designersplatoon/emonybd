@@ -1,0 +1,50 @@
+<h1>Your Cart</h1>
+<ul id="cart-list"></ul>
+
+<p id="total-amount" style="font-weight: bold;"></p>
+<div class="checkout-wrapper">
+  <a id="checkout-link" href="/checkout" style="display: none;">Proceed to Checkout</a>
+</div>
+
+<script>
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  function updateCartDisplay() {
+    const cartList = document.getElementById('cart-list');
+    const totalAmountEl = document.getElementById('total-amount');
+    cartList.innerHTML = '';
+
+    if (cart.length === 0) {
+      localStorage.removeItem('cart');
+      window.location.href = '/';
+      return;
+    }
+
+    let total = 0;
+
+    cart.forEach((item, index) => {
+      const quantity = item.quantity || 1;
+      const itemTotal = item.price * quantity;
+      total += itemTotal;
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        ${item.title} - 
+        Qty: ${quantity} × Tk${item.price.toFixed(2)} = Tk${itemTotal.toFixed(2)}
+        <button onclick="removeFromCart(${index})">Delete</button>
+      `;
+      cartList.appendChild(li);
+    });
+
+    totalAmountEl.textContent = `Total: Tk${total.toFixed(2)}`;
+    document.getElementById('checkout-link').style.display = 'inline-block';
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartDisplay();
+  }
+
+  updateCartDisplay();
+</script>

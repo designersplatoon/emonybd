@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <style>
+    .success-container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #f0fff0;
+      border: 1px solid #c3e6cb;
+      border-radius: 8px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .success-container h1 {
+      color: #28a745;
+    }
+
+    .success-container p {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
+    .success-container a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .success-container a:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <h1>Thank You!</h1>
+    <p>Your order has been placed successfully.</p>
+    <p>We will contact you shortly with delivery details.</p>
+    <a href="/">Continue Shopping</a>
+  </div>
+
+  <script>
+    // Clear cart from localStorage after successful checkout
+    localStorage.removeItem('cart');
+  </script>
+</body>
+</html>

@@ -13,17 +13,9 @@ const isAuth = (req, res, next) => {
 };
 
 // Multer configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/images');
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const { storage } = require('../config/cloudinary'); // ⬅️ use this
+const upload = multer({ storage });
 
-const upload = multer({ storage: storage });
 
 // Admin routes (protected)
 router.get('/add-product', isAuth, adminController.getAddProduct);

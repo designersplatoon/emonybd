@@ -1,48 +1,69 @@
 <h1>All Products</h1>
-  <div id="product-list" class="product-list">
-    <% products.forEach(product => { %>
-      <div class="product">
-        <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-        <h3><%= product.title %></h3>
-        <p>Tk<%= product.price %></p>
-        <a href="/product/<%= product._id %>">View</a>
+
+<!-- Product List Container -->
+<div id="product-list" class="product-list large-cards">
+  <% products.forEach(product => { %>
+    <div class="product-card large">
+      <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+      <div class="card-body">
+        <h3 class="product-title"><%= product.title %></h3>
+        <h3 class="product-price">Tk<%= product.price %></h3>
+        <a href="/product/<%= product._id %>" class="view-btn">View</a>
       </div>
-    <% }); %>
-  </div>
+    </div>
+  <% }); %>
+</div>
 
-  <div id="loading" class="loading" style="display: none;">Loading more products...</div>
+<!-- Loading Indicator -->
+<div id="loading" class="loading" style="display: none;">Loading more products...</div>
 
-  <script>
-    let page = <%= currentPage %>;
-    let loading = false;
-    let hasMore = <%= hasMore %>;
+<!-- Infinite Scroll Script -->
+<script>
+  let page = <%= currentPage %>;
+  let loading = false;
+  let hasMore = <%= hasMore %>;
 
-    window.addEventListener('scroll', async () => {
-      if (loading || !hasMore) return;
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
-        loading = true;
-        document.getElementById('loading').style.display = 'block';
-        page++;
-        const res = await fetch(`/products?page=${page}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+  window.addEventListener('scroll', async () => {
+    if (loading || !hasMore) return;
+
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
+      loading = true;
+      document.getElementById('loading').style.display = 'block';
+      page++;
+
+      try {
+        const res = await fetch(`/products?page=${page}`, {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
         const data = await res.json();
+
         if (data.products.length === 0) {
           hasMore = false;
         } else {
           const list = document.getElementById('product-list');
           data.products.forEach(p => {
             const div = document.createElement('div');
-            div.className = 'product';
+            div.className = 'product-card large';
             div.innerHTML = `
               <img src="${p.imageUrl}" alt="${p.title}">
-              <h3>${p.title}</h3>
-              <p>$${p.price}</p>
-              <a href="/product/${p._id}">View</a>
+              <div class="card-body">
+                <h3 class="product-title">${p.title}</h3>
+                <h3 class="product-price">Tk${p.price}</h3>
+                <a href="/product/${p._id}" class="view-btn">View</a>
+              </div>
             `;
             list.appendChild(div);
           });
         }
+
+        document.getElementById('loading').style.display = 'none';
+        loading = false;
+
+      } catch (err) {
+        console.error("Error loading products:", err);
         document.getElementById('loading').style.display = 'none';
         loading = false;
       }
-    });
-  </script>
+    }
+  });
+</script>

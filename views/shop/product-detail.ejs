@@ -1,7 +1,7 @@
 <div class="product-detail">
   <div class="product-image">
-  <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-</div>
+    <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+  </div>
 
   <div class="product-info">
     <h1><%= product.title %></h1>
@@ -17,19 +17,19 @@
       </div>
     </div>
 
-<button class="add-to-cart-btn" onclick="addToCart('<%= product._id %>', '<%= product.title %>', <%= product.price %>)">
-  Add to Cart
-</button>
+    <button class="add-to-cart-btn"
+      onclick="addToCart('<%= product._id %>', '<%= product.title %>', <%= product.price %>)">
+      Add to Cart
+    </button>
 
-<button class="order-now-btn" onclick="orderNow('<%= product._id %>', '<%= product.title %>', <%= product.price %>)">
-  Order Now
-</button>
-
+    <button class="order-now-btn"
+      onclick="orderNow('<%= product._id %>', '<%= product.title %>', <%= product.price %>)">
+      Order Now
+    </button>
   </div>
 </div>
 
 <div id="toast-container"></div>
-
 
 <script>
   function changeQty(amount) {
@@ -42,41 +42,6 @@
 
   function addToCart(_id, title, price) {
     const quantity = parseInt(document.getElementById('quantity').value) || 1;
-
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    const existing = cart.find(item => item.id === id);
-    if (existing) {
-      existing.quantity += quantity;
-    } else {
-      cart.push({ _id, title, price, quantity });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    showToast(`${quantity} x "${title}" added to cart!`);
-  }
-
-  function showToast(message) {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
-    container.appendChild(toast);
-
-    // Trigger animation
-    setTimeout(() => toast.classList.add('show'), 100);
-
-    // Remove after 3 seconds
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => container.removeChild(toast), 300);
-    }, 3000);
-  }
-</script>
-<script>
-  function orderNow(_id, title, price) {
-    const quantity = parseInt(document.getElementById('quantity').value) || 1;
-
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
     const existing = cart.find(item => item._id === _id);
@@ -87,13 +52,63 @@
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
+    showToast(`${quantity} x "${title}" added to cart!`);
+  }
 
-    // Optional: show confirmation toast
+  function orderNow(_id, title, price) {
+    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+
+    // Overwrite cart with only this product
+    const cart = [{ _id, title, price, quantity }];
+    localStorage.setItem('cart', JSON.stringify(cart));
+
     showToast(`${quantity} x "${title}" added to cart. Redirecting to checkout...`);
 
-    // Redirect to checkout after short delay
+    // Redirect after delay
     setTimeout(() => {
-      window.location.href = '/checkout'; // Update this path to match your app's routing
+      window.location.href = '/checkout'; // Replace with your actual checkout route
     }, 1000);
   }
+
+  function showToast(message) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 100);
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => container.removeChild(toast), 300);
+    }, 3000);
+  }
 </script>
+
+<style>
+  /* Optional: Toast styles */
+  #toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+
+  .toast {
+    background-color: #333;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 4px;
+    margin-top: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    font-family: sans-serif;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>

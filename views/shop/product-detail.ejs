@@ -1,21 +1,31 @@
 <div class="product-detail">
+  <div class="product-image">
   <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-  <h1><%= product.title %></h1>
-  <p><%= product.description %></p>
-  <p>Price: Tk<%= product.price %></p>
+</div>
 
-  <div class="quantity-control">
-    <label>Quantity:</label>
-    <div class="qty-wrapper">
-      <button type="button" onclick="changeQty(-1)">−</button>
-      <input type="number" id="quantity" value="1" min="1" readonly>
-      <button type="button" onclick="changeQty(1)">+</button>
+  <div class="product-info">
+    <h1><%= product.title %></h1>
+    <p class="description"><%= product.description %></p>
+    <p class="price">Price: Tk<%= product.price %></p>
+
+    <div class="quantity-control">
+      <label>Quantity:</label>
+      <div class="qty-wrapper">
+        <button type="button" onclick="changeQty(-1)">−</button>
+        <input type="number" id="quantity" value="1" min="1" readonly>
+        <button type="button" onclick="changeQty(1)">+</button>
+      </div>
     </div>
-  </div>
 
-  <button onclick="addToCart('<%= product._id %>', '<%= product.title %>', <%= product.price %>)">
-    Add to Cart
-  </button>
+<button class="add-to-cart-btn" onclick="addToCart('<%= product._id %>', '<%= product.title %>', <%= product.price %>)">
+  Add to Cart
+</button>
+
+<button class="order-now-btn" onclick="orderNow('<%= product._id %>', '<%= product.title %>', <%= product.price %>)">
+  Order Now
+</button>
+
+  </div>
 </div>
 
 <div id="toast-container"></div>
@@ -61,5 +71,29 @@
       toast.classList.remove('show');
       setTimeout(() => container.removeChild(toast), 300);
     }, 3000);
+  }
+</script>
+<script>
+  function orderNow(_id, title, price) {
+    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const existing = cart.find(item => item._id === _id);
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      cart.push({ _id, title, price, quantity });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Optional: show confirmation toast
+    showToast(`${quantity} x "${title}" added to cart. Redirecting to checkout...`);
+
+    // Redirect to checkout after short delay
+    setTimeout(() => {
+      window.location.href = '/checkout'; // Update this path to match your app's routing
+    }, 1000);
   }
 </script>

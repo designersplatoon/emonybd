@@ -1,29 +1,32 @@
 <!-- Slider -->
+<!-- Professional Slider -->
 <div class="slider" id="slider">
   <div class="slide-track">
-    <div class="slide"><img src="/images/slider/slider1.jpg" alt="Slide 1"></div>
-    <div class="slide"><img src="/images/slider/slider2.jpg" alt="Slide 2"></div>
-    <div class="slide"><img src="/images/slider/slider3.jpg" alt="Slide 3"></div>
+    <div class="slide"><img src="/images/slider/slider1.jpg" alt="Slide 1" /></div>
+    <div class="slide"><img src="/images/slider/slider2.jpg" alt="Slide 2" /></div>
+    <div class="slide"><img src="/images/slider/slider3.jpg" alt="Slide 3" /></div>
   </div>
 </div>
+
 
 
 <!-- First Product Section -->
 <section class="product-section">
   <h2>Featured Products</h2>
-  <div class="product-list small-cards">
-    <% featured1.forEach(product => { %>
-      <div class="product-card small">
-        <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-        <h3><%= product.title %></h3>
-        <h3>Tk<%= product.price %></h3>
-        <a href="/product/<%= product._id %>" class="view-btn">View</a>
-      </div>
-    <% }) %>
+<div class="product-list large-cards">
+  <% featured1.forEach(product => { %>
+   <div class="product-card large">
+  <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+  <div class="card-body">
+    <h3 class="product-title"><%= product.title %></h3>
+    <h3 class="product-price">Tk<%= product.price %></h3>
+    <a href="/product/<%= product._id %>" class="view-btn">View</a>
   </div>
-  <div class="button-wrapper">
-    <a href="/products" class="view-more-btn">See More Products</a>
-  </div>
+</div>
+
+  <% }) %>
+</div>
+
 </section>
 
 <!-- Two Banners Side by Side -->
@@ -37,12 +40,15 @@
   <h2>New Arrival</h2>
   <div class="product-list small-cards">
     <% featured2.forEach(product => { %>
-      <div class="product-card small">
-        <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
-        <h3><%= product.title %></h3>
-        <h3>Tk<%= product.price %></h3>
-        <a href="/product/<%= product._id %>" class="view-btn">View</a>
-      </div>
+    <div class="product-card large">
+  <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+  <div class="card-body">
+    <h3 class="product-title"><%= product.title %></h3>
+    <h3 class="product-price">Tk<%= product.price %></h3>
+    <a href="/product/<%= product._id %>" class="view-btn">View</a>
+  </div>
+</div>
+
     <% }) %>
   </div>
   <div class="button-wrapper">
@@ -51,7 +57,7 @@
 </section>
 
 <!-- YouTube Videos Section -->
-<section class="video-section">
+<!-- <section class="video-section">
   <h4 class="section-title">Watch Our Best Wishes</h4>
   <div class="video-cards">
     <% youtubeLinks.forEach((video) => { %>
@@ -63,7 +69,7 @@
       </div>
     <% }) %>
   </div>
-</section>
+</section> -->
 
 
 <script>

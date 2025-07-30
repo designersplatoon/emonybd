@@ -1,33 +1,49 @@
 <h1>Checkout</h1>
 
+<!-- 🛒 Cart Summary -->
+<div class="cart-summary" id="cart-summary">
+  <!-- Filled dynamically by JS -->
+</div>
+
+<!-- 🧾 Checkout Form -->
 <form id="checkout-form" action="/checkout" method="POST">
   <input type="text" name="name" placeholder="Your Name" required><br>
   <input type="text" name="phone" placeholder="Phone Number" required><br>
   <input type="text" name="address" placeholder="Address" required><br>
 
-  <!-- Hidden inputs to hold cart and total amount -->
+  <!-- Hidden cart & total -->
   <input type="hidden" name="cart" id="cart-data">
   <input type="hidden" name="total" id="cart-total">
 
-  <button type="submit">Place Order</button>
+  <button type="submit" class="place-order-btn">Place Order</button>
 </form>
-
 <script>
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
   if (cart.length === 0) {
     window.location.href = '/';
   } else {
-    // Set cart data
+    const summary = document.getElementById('cart-summary');
+    let total = 0;
+
+    // Build cart summary view
+    let summaryHTML = '<h3>Order Summary</h3>';
+    cart.forEach(item => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+      summaryHTML += `
+        <div class="cart-item">
+          <span>${item.title} × ${item.quantity}</span>
+          <span>Tk ${itemTotal.toFixed(2)}</span>
+        </div>
+      `;
+    });
+
+    summaryHTML += `<div class="total-line">Total: Tk ${total.toFixed(2)}</div>`;
+    summary.innerHTML = summaryHTML;
+
+    // Set hidden input values
     document.getElementById('cart-data').value = JSON.stringify(cart);
-
-    // Calculate total
-    const total = cart.reduce((sum, item) => {
-      const quantity = item.quantity || 1;
-      return sum + item.price * quantity;
-    }, 0);
-
-    // Set total amount
     document.getElementById('cart-total').value = total.toFixed(2);
   }
 </script>

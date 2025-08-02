@@ -1,0 +1,102 @@
+<div id="print-area">
+  <div class="header">
+    <h2>Invoice</h2>
+    <p>Order ID: <%= order._id %></p>
+  </div>
+
+  <div class="customer-info">
+    <strong>Customer:</strong> <%= order.customer.name %><br>
+    <strong>Phone:</strong> <%= order.customer.phone %><br>
+    <strong>Address:</strong> <%= order.customer.address %><br>
+    <strong>Date:</strong> <%= new Date(order.createdAt).toLocaleString() %><br>
+    <strong>Status:</strong> <%= order.status %><br>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% let itemTotal = 0; %>
+      <% order.products.forEach(p => { 
+          const title = p.productId?.title || 'Unknown';
+          const price = p.price || 0;
+          const qty = p.quantity || 1;
+          const subtotal = price * qty;
+          itemTotal += subtotal;
+      %>
+        <tr>
+          <td><%= title %></td>
+          <td><%= qty %></td>
+          <td>৳<%= price.toFixed(2) %></td>
+          <td>৳<%= subtotal.toFixed(2) %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" class="total">Items Subtotal</td>
+        <td>৳<%= itemTotal.toFixed(2) %></td>
+      </tr>
+      <tr>
+        <td colspan="3" class="total">Shipping Charge</td>
+        <td>৳<%= (order.shippingCharge || 0).toFixed(2) %></td>
+      </tr>
+      <tr>
+        <td colspan="3" class="total">Grand Total</td>
+        <td>৳<%= (itemTotal + (order.shippingCharge || 0)).toFixed(2) %></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<button onclick="window.print()">🖨️ Print Invoice</button>
+
+<style>
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+
+  .total {
+    font-weight: bold;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    #print-area, #print-area * {
+      visibility: visible;
+    }
+
+    #print-area {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 0;
+    }
+
+    button {
+      display: none;
+    }
+  }
+</style>

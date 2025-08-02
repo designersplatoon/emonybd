@@ -55,7 +55,7 @@ exports.getOrders = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('products.productId');
+      .populate('products.productId'); // Fetch product details
 
     const count = await Order.countDocuments();
     const totalPages = Math.ceil(count / limit);
@@ -71,6 +71,7 @@ exports.getOrders = async (req, res) => {
     res.status(500).send('Error fetching orders');
   }
 };
+
 
 exports.updateOrderStatus = async (req, res) => {
   const { id } = req.params;
@@ -168,3 +169,20 @@ exports.postDeleteProduct = async (req, res) => {
   await Product.findByIdAndDelete(req.params.id);
   res.redirect('/admin/products');
 };
+
+
+exports.getInvoice = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id).populate('products.productId');
+    if (!order) return res.status(404).send('Order not found');
+
+    res.render('admin/invoice', {
+      order,
+      title: `Invoice - ${order._id}` // ✅ this fixes the error
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to generate invoice');
+  }
+};
+

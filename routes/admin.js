@@ -29,5 +29,7 @@ router.post('/delete-product/:id', isAuth, adminController.postDeleteProduct);
 router.get('/orders', isAuth, adminController.getOrders);
 router.get('/', isAuth, adminController.getDashboard);
 router.post('/orders/:id/status', isAuth, adminController.updateOrderStatus);
+router.get('/orders/:id/invoice', adminController.getInvoice);
+
 
 module.exports = router;

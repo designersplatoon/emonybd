@@ -10,14 +10,15 @@ const orderSchema = new mongoose.Schema({
   products: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-      price: Number,       // Add this
+      price: Number,
       quantity: Number
     }
   ],
-  total: Number,           // Add this
+  total: Number, // This should include item total + shippingCharge
+  shippingCharge: Number, // 👈 NEW FIELD to store shipping separately
   status: {
     type: String,
-    enum: ['Pending', 'Delivered', 'Cancelled'],
+   enum: ['Pending', 'Courier', 'Delivered', 'Cancelled'],
     default: 'Pending'
   },
   createdAt: {
@@ -25,6 +26,7 @@ const orderSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+
 
 module.exports = mongoose.model('Order', orderSchema);
 

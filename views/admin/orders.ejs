@@ -1,21 +1,42 @@
 <div class="main-content">
   <h1>All Orders</h1>
+
+<% if (orders.length === 0) { %>
+  <p>No orders found.</p>
+<% } %>
+
+
   <% orders.forEach(order => { %>
+    
     <div class="order">
+
+
+      <h2>Order ID: <%= order._id %></h2>
+
       <h3>Customer: <%= order.customer.name %> | Phone: <%= order.customer.phone %></h3>
       <p>Address: <%= order.customer.address %></p>
-      <p>Status: <strong><%= order.status %></strong></p>
+     <p>Status: 
+  <strong style="color:
+    <%= order.status === 'Delivered' ? 'green' : 
+        order.status === 'Cancelled' ? 'red' : 
+        order.status === 'Courier' ? 'blue' : 
+        'orange' %>;">
+    <%= order.status %>
+  </strong>
+</p>
       <p>Order Date: <%= new Date(order.createdAt).toLocaleString() %></p>
 
       <!-- Status update form -->
-      <form action="/admin/orders/<%= order._id %>/status" method="POST" style="margin-bottom:10px;">
-        <select name="status">
-          <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
-          <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-          <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-        </select>
-        <button type="submit">Update Status</button>
-      </form>
+     <form action="/admin/orders/<%= order._id %>/status" method="POST" style="margin-bottom:10px;">
+  <select name="status">
+    <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+    <option value="Courier" <%= order.status === 'Courier' ? 'selected' : '' %>>Courier</option>
+    <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+    <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+  </select>
+  <button type="submit">Update Status</button>
+</form>
+
 
       <ul>
         <% let orderTotal = 0; %>
@@ -36,7 +57,16 @@
         <% }) %>
       </ul>
 
-      <p><strong>Total: ৳<%= orderTotal.toFixed(2) %></strong></p>
+  <% const shipping = order.shippingCharge || 0; %>
+<p><strong>Subtotal (Items): ৳<%= orderTotal.toFixed(2) %></strong></p>
+<p><strong>Shipping Charge: ৳<%= shipping.toFixed(2) %></strong></p>
+<p><strong>Grand Total: ৳<%= (orderTotal + shipping).toFixed(2) %></strong></p>
+
+<!-- Print Invoice Button -->
+<form action="/admin/orders/<%= order._id %>/invoice" method="GET" target="_blank" style="display:inline;">
+  <button type="submit" class="print-btn">🧾 Print Invoice</button>
+</form>
+
       <hr>
     </div>
   <% }); %>

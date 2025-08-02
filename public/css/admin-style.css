@@ -281,3 +281,56 @@ table a:hover {
 .order ul li {
   margin: 5px 0;
 }
+/* Form select styling */
+form select[name="status"] {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+/* Button styling */
+form button[type="submit"] {
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #2d89ef;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+form button[type="submit"]:hover {
+  background-color: #1c6cd5;
+}
+
+/* Status label colors */
+.status-label {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-courier {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.status-delivered {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}

@@ -52,10 +52,12 @@ exports.getCheckout = async (req, res) => {
 
 
 exports.postCheckout = async (req, res) => {
-  const { name, phone, address, cart, total } = req.body;
+  const { name, phone, address, cart, total, shipping_charge } = req.body;
 
   try {
     const cartItems = JSON.parse(cart);
+    const shippingCharge = parseFloat(shipping_charge || 0);
+    const submittedTotal = parseFloat(total);
 
     if (cartItems.length === 0) {
       return res.status(400).send('Your cart is empty.');
@@ -68,30 +70,37 @@ exports.postCheckout = async (req, res) => {
       quantity: item.quantity || 1
     }));
 
+    // Calculate item total
+    const itemTotal = cartItems.reduce(
+      (sum, item) => sum + item.price * (item.quantity || 1),
+      0
+    );
+
+    const calculatedTotal = itemTotal + shippingCharge;
+
     // Total price validation
-    const calculatedTotal = cartItems.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
-    if (parseFloat(total) !== calculatedTotal) {
+    if (Math.abs(submittedTotal - calculatedTotal) > 0.01) {
       return res.status(400).send('Total amount mismatch');
     }
 
     const order = new Order({
       customer: { name, phone, address },
       products,
-      total: parseFloat(total),
+      total: submittedTotal,
+      shippingCharge, 
       status: 'Pending'
     });
 
     await order.save();
 
-    // Clear cart after successful checkout
-    res.clearCookie('cart');  // Optional: Clear cart from session or cookies
-
-    res.redirect('/order-success'); // Redirect to the success page
+    res.clearCookie('cart');  // Optional: Clear cart from cookies/session
+    res.redirect('/order-success');
   } catch (err) {
     console.error('Order Error:', err);
     res.status(500).send('Failed to process order');
   }
 };
+
 
 
 exports.getAllProducts = async (req, res) => {

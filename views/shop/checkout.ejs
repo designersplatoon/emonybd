@@ -1,88 +1,99 @@
- <h1>Checkout</h1>
+<h1>Checkout</h1>
 
-  <!-- 🛒 Cart Summary -->
-  <div class="cart-summary" id="cart-summary">
-    <!-- Filled dynamically by JS -->
-  </div>
+<!-- 🛒 Cart Summary -->
+<div class="cart-summary" id="cart-summary">
+  <!-- Filled dynamically by JS -->
+</div>
 
-  <!-- 🧾 Checkout Form -->
-  <form id="checkout-form" action="/checkout" method="POST">
-    <input type="text" name="name" placeholder="Your Name" required><br>
-    <input type="text" name="phone" placeholder="Phone Number" required><br>
-    <input type="text" name="address" placeholder="Address" required><br><br>
+<!-- 🧾 Checkout Form -->
+<form id="checkout-form" action="/checkout" method="POST">
 
-    <!-- Shipping Selection -->
-    <label for="shipping">Shipping Location:</label><br>
-    <select id="shipping" name="shipping" required>
-      <option value="">-- Select Shipping Area --</option>
-      <option value="inside">Inside Khulna (+Tk 70)</option>
-      <option value="outside">Outside Khulna (+Tk 110)</option>
-    </select><br><br>
+  <!-- Shipping Selection -->
+  <label for="shipping">Shipping Location:</label><br>
+  <select id="shipping" name="shipping" required>
+    <option value="">-- Select Shipping Area --</option>
+    <option value="inside">Inside Khulna (+Tk 70)</option>
+    <option value="outside">Outside Khulna (+Tk 110)</option>
+  </select><br><br>
 
-    <!-- Hidden cart & total -->
-    <input type="hidden" name="cart" id="cart-data">
-    <input type="hidden" name="total" id="cart-total">
+  <input type="text" name="name" placeholder="Your Name" required><br>
+  <input type="text" name="phone" placeholder="Phone Number" required><br>
+  <input type="text" name="address" placeholder="Address" required><br><br>
 
-    <button type="submit" class="place-order-btn">Place Order</button>
-  </form>
+  <!-- Hidden cart & total -->
+  <input type="hidden" name="cart" id="cart-data">
+  <input type="hidden" name="total" id="cart-total">
+  <input type="hidden" name="shipping_charge" id="shipping-charge">
 
-  <script>
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  <button type="submit" class="place-order-btn">Place Order</button>
+</form>
 
-    if (cart.length === 0) {
-      window.location.href = '/';
-    } else {
-      const summary = document.getElementById('cart-summary');
-      const shippingSelect = document.getElementById('shipping');
-      let baseTotal = 0;
+<script>
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-      // Build base cart summary
-      let summaryHTML = '<h3>Order Summary</h3>';
-      cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        baseTotal += itemTotal;
-        summaryHTML += `
-          <div class="cart-item">
-            <span>${item.title} × ${item.quantity}</span>
-            <span>Tk ${itemTotal.toFixed(2)}</span>
-          </div>
-        `;
-      });
+  if (cart.length === 0) {
+    window.location.href = '/';
+  } else {
+    const summary = document.getElementById('cart-summary');
+    const shippingSelect = document.getElementById('shipping');
+    const shippingChargeInput = document.getElementById('shipping-charge');
+    const cartTotalInput = document.getElementById('cart-total');
+    const cartDataInput = document.getElementById('cart-data');
 
-      let finalTotal = baseTotal;
-      summaryHTML += `<div class="total-line" id="total-line">Total: Tk ${finalTotal.toFixed(2)}</div>`;
-      summary.innerHTML = summaryHTML;
+    let baseTotal = 0;
+    let shippingCharge = 0;
+    let finalTotal = 0;
 
-      // Set initial hidden input values
-      document.getElementById('cart-data').value = JSON.stringify(cart);
-      document.getElementById('cart-total').value = finalTotal.toFixed(2);
+    // Build cart summary
+    let summaryHTML = '<h3>Order Summary</h3>';
+    cart.forEach(item => {
+      const itemTotal = item.price * item.quantity;
+      baseTotal += itemTotal;
+      summaryHTML += `
+        <div class="cart-item">
+          <span>${item.title} × ${item.quantity}</span>
+          <span>Tk ${itemTotal.toFixed(2)}</span>
+        </div>
+      `;
+    });
 
-      // Update total when shipping changes
-      shippingSelect.addEventListener('change', () => {
-        const shippingOption = shippingSelect.value;
-        let shippingCharge = 0;
+    finalTotal = baseTotal;
+    summaryHTML += `<div class="total-line" id="total-line">Total: Tk ${finalTotal.toFixed(2)}</div>`;
+    summary.innerHTML = summaryHTML;
 
-        if (shippingOption === 'inside') {
-          shippingCharge = 70;
-        } else if (shippingOption === 'outside') {
-          shippingCharge = 110;
-        }
+    const totalLine = document.getElementById('total-line'); // ✅ NOW it exists
 
-        finalTotal = baseTotal + shippingCharge;
+    // Set initial hidden values
+    cartDataInput.value = JSON.stringify(cart);
+    cartTotalInput.value = finalTotal.toFixed(2);
+    shippingChargeInput.value = shippingCharge.toFixed(2);
 
-        // Update display
-        document.getElementById('total-line').textContent = `Total: Tk ${finalTotal.toFixed(2)} (incl. shipping)`;
+    // Handle shipping selection
+    shippingSelect.addEventListener('change', () => {
+      const option = shippingSelect.value;
 
-        // Update hidden input
-        document.getElementById('cart-total').value = finalTotal.toFixed(2);
-      });
+      if (option === 'inside') {
+        shippingCharge = 70;
+      } else if (option === 'outside') {
+        shippingCharge = 110;
+      } else {
+        shippingCharge = 0;
+      }
 
-      // Prevent form submission if shipping not selected
-      document.getElementById('checkout-form').addEventListener('submit', function (e) {
-        if (!shippingSelect.value) {
-          alert('Please select a shipping area to proceed.');
-          e.preventDefault();
-        }
-      });
-    }
-  </script>
+      finalTotal = baseTotal + shippingCharge;
+
+      // Update display and hidden fields
+      totalLine.textContent = `Total: Tk ${finalTotal.toFixed(2)} (incl. shipping)`;
+      cartTotalInput.value = finalTotal.toFixed(2);
+      shippingChargeInput.value = shippingCharge.toFixed(2);
+    });
+
+    // Ensure shipping area is selected before form submit
+    document.getElementById('checkout-form').addEventListener('submit', function (e) {
+      if (!shippingSelect.value) {
+        alert('Please select a shipping area to proceed.');
+        e.preventDefault();
+      }
+    });
+  }
+</script>

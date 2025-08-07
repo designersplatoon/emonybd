@@ -4,7 +4,7 @@
 <div id="product-list" class="product-list large-cards">
   <% products.forEach(product => { %>
     <div class="product-card large">
-<a href="/product/<%= product._id %>" class="view-btn">
+<a href="/product/<%= product._id %>" class="img_a">
       <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
 </a>
       <div class="card-body">
@@ -47,7 +47,8 @@
             const div = document.createElement('div');
             div.className = 'product-card large';
             div.innerHTML = `
-              <img src="${p.imageUrl}" alt="${p.title}">
+<a href="/product/${p._id}" class="img_a">
+              <img src="${p.imageUrl}" alt="${p.title}"></a>
               <div class="card-body">
                 <h3 class="product-title">${p.title}</h3>
                 <h2 class="product-price">Tk${p.price}</h2>

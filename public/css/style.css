@@ -553,6 +553,7 @@ h1,h2 {
   color: #666;
   margin-bottom: 15px;
    white-space: pre-line;
+  text-align: left;
 }
 
 .product-info .price {

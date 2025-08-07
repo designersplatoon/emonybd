@@ -16,7 +16,9 @@
 <div class="product-list large-cards">
   <% featured1.forEach(product => { %>
    <div class="product-card large">
+<a href="/product/<%= product._id %>" class="view-btn">
   <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+</a>
   <div class="card-body">
     <h3 class="product-title"><%= product.title %></h3>
     <h2 class="product-price">Tk<%= product.price %></h2>
@@ -41,7 +43,9 @@
   <div class="product-list small-cards">
     <% featured2.forEach(product => { %>
     <div class="product-card large">
+<a href="/product/<%= product._id %>" class="view-btn">
   <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+</a>
   <div class="card-body">
     <h3 class="product-title"><%= product.title %></h3>
     <h2 class="product-price">Tk<%= product.price %></h2>

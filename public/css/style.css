@@ -258,6 +258,10 @@ img {
   background-color: #007BFF;
   color: white;
 }
+.img_a{
+  text-decoration: none;
+  cursor: pointer;
+}
 
 .cart-btn {
   background-color: #28a745;
